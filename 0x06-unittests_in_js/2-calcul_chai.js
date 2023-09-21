@@ -1,3 +1,7 @@
+/**
+ * 
+ */
+
 function calculateNumber(type, a, b) {
     const roundedA = Math.round(a);
     const roundedB = Math.round(b);
@@ -16,5 +20,3 @@ function calculateNumber(type, a, b) {
             throw new Error('Type must be one of SUM, SUBTRACT, or DIVIDE');
     }
 }
-
-module.exports = calculateNumber;
