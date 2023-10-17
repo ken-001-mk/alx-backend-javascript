@@ -1,38 +1,40 @@
-const fs = require('fs');
+const { readFile } = require('fs');
 
-function countStudents(path) {
+function countStudents(fileName) {
+  const students = {};
+  const fields = {};
+  let length = 0;
   return new Promise((resolve, reject) => {
-    fs.readFile(path, 'utf-8', (err, data) => {
-      if (err) {
+    readFile(fileName, (error, data) => {
+      if (error) {
         reject(Error('Cannot load the database'));
-      }
-      if (data) {
-        const students = {};
-        const fields = {};
-        const lines = data.split('\n');
-        let i = 0;
-        for (const line of lines) {
-          if (line) {
-            const student = line.split(',');
-            if (!students[student[3]]) {
-              students[student[3]] = [];
+      } else {
+        const lines = data.toString().split('\n');
+        for (let i = 0; i < lines.length; i += 1) {
+          if (lines[i]) {
+            length += 1;
+            const field = lines[i].toString().split(',');
+            if (Object.prototype.hasOwnProperty.call(students, field[3])) {
+              students[field[3]].push(field[0]);
+            } else {
+              students[field[3]] = [field[0]];
             }
-            students[student[3]].push(student[0]);
-            if (!fields[student[3]]) {
-              fields[student[3]] = 0;
+            if (Object.prototype.hasOwnProperty.call(fields, field[3])) {
+              fields[field[3]] += 1;
+            } else {
+              fields[field[3]] = 1;
             }
-            fields[student[3]] += 1;
-            i += 1;
           }
         }
-        console.log(`Number of students: ${i}`);
-        for (const field in fields) {
-          if (field) {
-            console.log(`Number of students in ${field}: ${fields[field]}. List: ${students[field].join(', ')}`);
+        const l = length - 1;
+        console.log(`Number of students: ${l}`);
+        for (const [key, value] of Object.entries(fields)) {
+          if (key !== 'field') {
+            console.log(`Number of students in ${key}: ${value}. List: ${students[key].join(', ')}`);
           }
         }
+        resolve(data);
       }
-      resolve();
     });
   });
 }

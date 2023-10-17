@@ -1,38 +1,26 @@
-import fs from 'fs';
+const { readFile } = require('fs');
 
-export const readDatabase = (path) => {
+module.exports = function readDatabase(filePath) {
+  const students = {};
   return new Promise((resolve, reject) => {
-    fs.readFile(path, 'utf-8', (err, data) => {
-    if (err) {
-      reject(Error('Cannot load the database'));
-    }
-    if (data) {
-      const students = {};
-      const fields = {};
-      const lines = data.split('\n');
-      let i = 0;
-      for (const line of lines) {
-      if (line) {
-        const student = line.split(',');
-        if (!students[student[3]]) {
-        students[student[3]] = [];
+    readFile(filePath, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        const lines = data.toString().split('\n');
+        const noHeader = lines.slice(1);
+        for (let i = 0; i < noHeader.length; i += 1) {
+          if (noHeader[i]) {
+            const field = noHeader[i].toString().split(',');
+            if (Object.prototype.hasOwnProperty.call(students, field[3])) {
+              students[field[3]].push(field[0]);
+            } else {
+              students[field[3]] = [field[0]];
+            }
+          }
         }
-        students[student[3]].push(student[0]);
-        if (!fields[student[3]]) {
-        fields[student[3]] = 0;
-        }
-        fields[student[3]] += 1;
-        i += 1;
+        resolve(students);
       }
-      }
-      console.log(`Number of students: ${i}`);
-      for (const field in fields) {
-      if (field) {
-        console.log(`Number of students in ${field}: ${fields[field]}. List: ${students[field].join(', ')}`);
-      }
-      }
-    }
-    resolve();
     });
   });
-}
+};
