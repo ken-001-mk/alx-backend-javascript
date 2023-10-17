@@ -1,9 +1,9 @@
-function getPaymentTokenFromAPI() {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve('my_payment_token');
-      }, 300);
-    });
+function getPaymentTokenFromAPI(success) {
+  if (success) {
+return new Promise((resolve) => {
+        resolve({data: 'Successful response from the API' });
+});
   }
-  
-  module.exports = getPaymentTokenFromAPI;
+}
+
+module.exports = getPaymentTokenFromAPI;

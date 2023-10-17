@@ -1,51 +1,28 @@
-const http = require('http');
-const app = require('./api');
+const request = require("request");
+const {describe, it} = require("mocha");
+const expect = require("chai").expect;
 
-function runTests(tests) {
-    let failed = 0;
-    for (const [name, fn] of tests) {
-        try {
-            fn();
-            console.log(`\x1b[32m[PASS]\x1b[0m ${name}`);
-        } catch (err) {
-            failed++;
-            console.log(`\x1b[31m[FAIL]\x1b[0m ${name}`);
-            console.log(`\t${err.message}`);
-        }
+describe("Index page", function() {
+    const options = {
+	url: "http://localhost:7865/",
+	method: "GET"
     }
-    return failed;
-}
-
-function expectStatus(res, statusCode) {
-    if (res.statusCode !== statusCode) {
-        throw new Error(`Expected status ${statusCode} but got ${res.statusCode}`);
-    }
-}
-
-function expectBody(res, expectedbody) {
-    let body = '';
-    res.on('data', (chunk) => {
-        body += chunk;
+    it("check correct status code", function(done) {
+	request(options, function(err, res, body) {
+	    expect(res.statusCode).to.equal(200);
+	    done();
+	});
     });
-    res.on('end', () => {
-        if (body !== expectedbody) {
-            throw new Error(`Expected body '${expectedbody}' but got '${body}'`);
-        }
+    it("check correct content", function(done) {
+	request(options, function(err, res, body) {
+	    expect(body).to.contain("Welcome to the payment system");
+	    done();
+	});
     });
-}
-
-const tests = [
-    ['Returns status code 200', () => {
-        const request = http.get('http://localhost:7865', (res) => {
-            expectStatus(res, 200);
-        });
-    }],
-    ['Returns the string "Welcome to the payment API system!"', () => {
-        const request = http.get('http://localhost:7865', (res) => {
-            expectBody(res, 'Welcome to the payment API system!');
-        });
-    }],
-]
-
-console.log('Running tests  for index page');
-runTests(tests);
+    it("check correct content length", function(done) {
+	request(options, function(err, res, body) {
+	    expect(res.headers['content-length']).to.equal('29');
+	    done();
+	});
+    });
+});

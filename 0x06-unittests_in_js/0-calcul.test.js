@@ -1,31 +1,22 @@
-/**
- * eslint-disable jest/no-disabled-tests
- */
+const calculateNumber = require("./0-calcul.js");
 const assert = require('assert');
-const calculateNumber = require('./0-calcul');
 
 describe('calculateNumber', () => {
-    it('handles adding two rounded numbers when type is SUM', () => {
-        assert.equal(calculateNumber('SUM', 1.2, 3.7), 5);
-        assert.equal(calculateNumber('SUM', -1.2, -3.7), -5);
-      });
-    
-      it('handles subtracting two rounded numbers when type is SUBTRACT', () => {
-        assert.equal(calculateNumber('SUBTRACT', 5.9, 2.3), 4);
-        assert.equal(calculateNumber('SUBTRACT', -5.9, -2.3), -4);
-      });
-    
-      it('handles dividing two rounded numbers when type is DIVIDE', () => {
-        assert.equal(calculateNumber('DIVIDE', 8, 2), 4);
-        // assert.equal(calculateNumber('DIVIDE', 5.0, 3.0), 2);
-      });
-    
-      it('returns Error when dividing by 0', () => {
-        assert.equal(calculateNumber('DIVIDE', 4, 0), 'Error');
-        assert.equal(calculateNumber('DIVIDE', -8, 0), 'Error');
-      });
-    
-      it('throws an error when an invalid type is provided', () => {
-        assert.throws(() => calculateNumber('INVALID_TYPE', 1, 2), Error);
-      });
-});
+    it('rounding of a', () => {
+        assert.equal(calculateNumber(15.78, 2), 18);
+        assert.equal(calculateNumber(1.2, 0), 1);
+        assert.equal(calculateNumber(3.5, 2), 6);
+    });
+
+    it('rounding of b', () => {
+        assert.equal(calculateNumber(2, 15.78), 18);
+        assert.equal(calculateNumber(0, 1.2), 1);
+        assert.equal(calculateNumber(2, 3.5), 6);
+    });
+
+    it('suming of a and b', () => {
+        assert.equal(calculateNumber(15.78, 2.5), 19);
+        assert.equal(calculateNumber(1.2, 0.2), 1);
+        assert.equal(calculateNumber(3.5, 2.7), 7);
+    });
+})
